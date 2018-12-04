@@ -1,1 +1,1 @@
-# KendoGridClintSideTest
+# KendoGridClientSideTest
