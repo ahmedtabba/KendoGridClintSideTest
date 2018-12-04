@@ -195,6 +195,24 @@ namespace KendoGridClientSideTest.Controllers
             return View(category);
         }
 
+        public ActionResult Delete(int id)
+        {
+            var category = _context.Categories.SingleOrDefault(c => c.Id == id);
+            if (category == null)
+                return HttpNotFound();
+
+
+            var products = _context.Products.Where(p => p.CategoryId == id).ToList();
+            if (products.Count > 0)
+                _context.Products.RemoveRange(products);
+
+
+            _context.Categories.Remove(category);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+
+        }
+
 
     }
 }

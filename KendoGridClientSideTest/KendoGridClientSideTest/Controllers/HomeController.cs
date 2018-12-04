@@ -1,23 +1,18 @@
-﻿using KendoGridClientSideTest.Models;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 
 namespace KendoGridClientSideTest.Controllers
 {
     public class HomeController : Controller
     {
 
-        private ApplicationDbContext _context;
-        public HomeController()
-        {
-            _context = new ApplicationDbContext();
-        }
+
 
 
         public ActionResult Index()
         {
-            var categories = _context.Categories;
 
-            return View(categories);
+
+            return View();
         }
 
         public ActionResult About()
