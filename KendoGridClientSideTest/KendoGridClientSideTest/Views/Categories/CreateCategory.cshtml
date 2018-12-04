@@ -1,0 +1,81 @@
+﻿@model KendoGridClientSideTest.Models.Category
+
+@{
+    ViewBag.Title = "CreateCategory";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+
+<h2>CreateCategory</h2>
+
+@using (Html.BeginForm("Create", "Categories"))
+{
+    <fieldset>
+
+
+        @Html.LabelFor(category => category.Name)
+        @Html.EditorFor(category => category.Name)
+
+        <br />
+        <br />
+        <br />
+
+
+        <input type="button" value="addProduct" id="addProduct" onclick="AddProduct()" />
+
+        <br />
+        <br />
+
+
+        @(Html.Kendo().Grid(Model.Products)
+                    .Name("Products")
+                    .Editable(editable => editable.Mode(GridEditMode.InCell).CreateAt(GridInsertRowPosition.Bottom))
+                    .Columns(columns =>
+                                      {
+                                          columns.Bound(p => p.Name).ClientTemplate("#= Name #" +
+                              "<input type='hidden' name='Products[#= index(data)#].Name' value='#= Name #' />"
+                               );
+                                          columns.Bound(p => p.Id).Hidden().ClientTemplate("#= Id #" +
+                              "<input type='hidden' name='Products[#= index(data)#].Id' value='#= Id #' />"
+                               );
+                                          columns.Command(command => command.Destroy()).Width(100);
+                                      })
+                    .DataSource(dataSource => dataSource.Ajax()
+                    .Model(model =>
+                                  {
+                                      model.Id(p => p.Id);
+                                      model.Field(p => p.Id).Editable(false);
+                                  })
+                     .ServerOperation(false)
+                     )
+        )
+    </fieldset>
+
+    <input type="submit" value="Save" />
+}
+
+<script>
+
+    
+
+    function index(dataItem) {
+        var data = $("#Products").data("kendoGrid").dataSource.data();
+
+        return data.indexOf(dataItem);
+    }
+
+    function AddProduct() {
+        console.log("add Clicked");
+        var data = $("#Products").data("kendoGrid");
+        data.addRow();
+
+    }
+
+
+</script>
+
+
+

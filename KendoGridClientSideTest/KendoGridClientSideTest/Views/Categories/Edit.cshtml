@@ -1,0 +1,87 @@
+﻿@model KendoGridClientSideTest.Models.Category
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit</h2>
+@using (Html.BeginForm("Update", "Categories"))
+{
+
+
+    @Html.LabelFor(category => category.Name)
+    @Html.EditorFor(category => category.Name)
+
+    <br />
+    <br />
+    <br />
+
+    @Html.HiddenFor(c => c.Id)
+
+
+    @(Html.Kendo().Grid<KendoGridClientSideTest.Models.Product>
+                        ()
+                        .Name("grid")
+                        .Columns(columns =>
+                        {
+                            columns.Bound(c => c.Name);
+                            columns.Command(command => command.Destroy()).Width(180);
+
+                        })
+                        .ToolBar(toolbar =>
+                        {
+                            toolbar.Create();
+                        })
+                        .Editable(editable => editable.Mode(GridEditMode.InCell))
+                        .Scrollable(scrollable => scrollable.Enabled(false))
+                        .DataSource(dataSource => dataSource
+                        .Ajax()
+                        .Batch(true)
+                        .ServerOperation(false)
+                        .Events(events => events.Error("error_handler"))
+                        .Model(model => model.Id(p => p.Id))
+                        .Create(create => create.Action("Editing_Create", "Categories").Data("GetByCategoryId"))
+                        .Read(read => read.Action("Products_Read", "Categories").Data("GetByCategoryId"))
+                        .Update(update => update.Action("Editing_Update", "Categories"))
+                        .Destroy(destroy => destroy.Action("Editing_Destroy", "Categories"))
+                        )
+    )
+
+    <button type="submit" id="save" onclick="Save()" runat="server">Save</button>
+    <button type="button" id="cancel" onclick="cancel()" runat="server">Cancel Changes</button>
+
+}
+    <script type="text/javascript">
+
+    function GetByCategoryId() {
+        var cId = @Model.Id;
+        console.log(cId);
+        return {
+            catId: cId
+        }
+    }
+
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+
+
+   function Save() {
+       $("#grid").data("kendoGrid").saveChanges();
+   }
+
+    function cancel() {
+        $("#grid").data("kendoGrid").cancelChanges();
+    }
+    </script>
