@@ -185,7 +185,15 @@ namespace KendoGridClientSideTest.Controllers
         }
 
 
+        public ActionResult Details(int id)
+        {
+            var category = _context.Categories.SingleOrDefault(c => c.Id == id);
+            if (category == null)
+                return HttpNotFound();
 
+
+            return View(category);
+        }
 
 
     }

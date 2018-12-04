@@ -1,0 +1,66 @@
+﻿@model KendoGridClientSideTest.Models.Category
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Category</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+    </dl>
+</div>
+
+
+
+
+@(Html.Kendo().Grid<KendoGridClientSideTest.Models.Product>()
+          .Name("grid")
+          .Columns(columns =>
+          {
+              columns.Bound(c => c.Name);
+              columns.Command(command => { command.Edit(); command.Destroy(); }).Width(180);
+          })
+          .Editable(editable => editable.Mode(GridEditMode.InLine))
+          .Pageable()
+          .Scrollable()
+          .DataSource(dataSource => dataSource
+              .Ajax()
+              .Model(model => model.Id(p => p.Id))
+              .Read(read => read.Action("Products_Read", "Products").Data("GetByCategoryId"))
+              .Update(update => update.Action("Products_Update", "Products"))
+              .Destroy(destroy => destroy.Action("Products_Destroy", "Products"))
+          )
+)
+
+
+
+
+
+
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+
+
+<script>
+     function GetByCategoryId() {
+        var cId = @Model.Id;
+        console.log(cId);
+        return {
+            catId: cId
+        }
+    }
+</script>

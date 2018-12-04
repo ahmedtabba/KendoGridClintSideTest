@@ -1,0 +1,19 @@
+﻿
+@(Html.Kendo().Grid<KendoGridClientSideTest.Models.Product>()
+      .Name("grid")
+      .Columns(columns =>
+      {
+        columns.Bound(c => c.Name);
+        columns.Command(command => { command.Edit(); command.Destroy(); }).Width(180);
+      })
+      .Editable(editable => editable.Mode(GridEditMode.InLine))
+      .Pageable()
+      .Scrollable()
+      .DataSource(dataSource => dataSource
+          .Ajax()
+          .Model(model => model.Id(p => p.Id))
+          .Read(read => read.Action("Products_Read", "Products"))
+          .Update(update => update.Action("Products_Update", "Products"))
+          .Destroy(destroy => destroy.Action("Products_Destroy", "Products"))
+      )
+)
